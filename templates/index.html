@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Gempa Indonesia</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0a0e1a;
+            color: #e8eaf0;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #111827;
+            border-bottom: 2px solid #e53e3e;
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        header .dot {
+            width: 10px;
+            height: 10px;
+            background: #e53e3e;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        /* ✅ BARU: status bar auto-refresh */
+        .status-bar {
+            background: #0d1421;
+            border-bottom: 1px solid #1f2937;
+            padding: 0.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .status-bar .update-time { color: #48bb78; }
+        .status-bar .countdown   { color: ##60a5fa; }
+
+        main {
+            max-width: 700px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+        }
+
+        #peta {
+            width: 100%;
+            height: 350px;
+            border-radius: 14px;
+            border: 1px solid #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .magnitude-box {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .magnitude-number {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .magnitude-number.besar  { color: #e53e3e; }
+        .magnitude-number.sedang { color: #ed8936; }
+        .magnitude-number.kecil  { color: #48bb78; }
+
+        .magnitude-label { font-size: 0.85rem; color: #9ca3af; margin-top: 4px; }
+
+        .warning-badge {
+            display: inline-block;
+            background: #7f1d1d;
+            color: #fca5a5;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 99px;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .info-item {
+            background: #0d1421;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .info-item .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #6b7280;
+            margin-bottom: 6px;
+        }
+
+        .info-item .value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #e8eaf0;
+        }
+
+        .full-width { grid-column: 1 / -1; }
+
+        .terkini-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .terkini-row {
+            display: grid;
+            grid-template-columns: 90px 1fr 60px;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid #1a2235;
+        }
+
+        .terkini-row:last-child  { border-bottom: none; }
+        .terkini-row:first-child { padding-top: 0; }
+
+        .terkini-jam {
+            font-size: 0.8rem;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+
+        .terkini-jam span {
+            display: block;
+            font-size: 0.7rem;
+            color: #374151;
+            margin-top: 2px;
+        }
+
+        .terkini-wilayah {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #d1d5db;
+            line-height: 1.4;
+        }
+
+        .terkini-mag {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 800;
+            border-radius: 8px;
+            padding: 6px 4px;
+        }
+
+        .terkini-mag.besar  { background: #2d1111; color: #e53e3e; }
+        .terkini-mag.sedang { background: #2a1c0a; color: #ed8936; }
+        .terkini-mag.kecil  { background: #0d2118; color: #48bb78; }
+
+        .error-box {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .refresh-btn {
+            display: block;
+            margin: 2rem auto 0;
+            padding: 10px 24px;
+            background: #1f2937;
+            color: #e8eaf0;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: none;
+            text-align: center;
+            width: fit-content;
+            transition: background 0.2s;
+        }
+
+        .refresh-btn:hover { background: #374151; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #374151;
+            font-size: 0.8rem;
+        }
+
+        /* ✅ BARU: animasi flash saat data update */
+        @keyframes flash {
+            0%   { background: #1a3a2a; }
+            100% { background: #111827; }
+        }
+
+        .updated { animation: flash 1s ease-out; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="dot"></div>
+    <h1>🌏 Monitoring Gempa Indonesia — BMKG</h1>
+</header>
+
+<!-- ✅ BARU: status bar -->
+<div class="status-bar">
+    <span>Diperbarui: <span class="update-time" id="update-time">—</span></span>
+    <span class="countdown">Refresh dalam <span id="countdown">60</span>s</span>
+</div>
+
+<main>
+    {% if gempa %}
+
+    <p class="section-label">📍 Lokasi Episentrum</p>
+    <div id="peta"></div>
+
+    <div class="card" id="card-utama">
+        <p class="card-title">Gempa Terbaru</p>
+
+        <div class="magnitude-box">
+            <div>
+                <div class="magnitude-number
+                    {% if gempa.Magnitude | float >= 5 %}besar
+                    {% elif gempa.Magnitude | float >= 3 %}sedang
+                    {% else %}kecil{% endif %}"
+                    id="mag-number">
+                    {{ gempa.Magnitude }}
+                </div>
+                <div class="magnitude-label">Skala Richter (SR)</div>
+                <div id="warning-badge">
+                    {% if gempa.Magnitude | float >= 5 %}
+                        <span class="warning-badge">⚠ GEMPA BESAR</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="label">📅 Tanggal</div>
+                <div class="value" id="tanggal">{{ gempa.Tanggal }}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">🕐 Jam</div>
+                <div class="value" id="jam">{{ gempa.Jam }}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">📍 Koordinat</div>
+                <div class="value" id="koordinat">{{ gempa.Lintang }}, {{ gempa.Bujur }}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">🔻 Kedalaman</div>
+                <div class="value" id="kedalaman">{{ gempa.Kedalaman }}</div>
+            </div>
+            <div class="info-item full-width">
+                <div class="label">🗺 Wilayah</div>
+                <div class="value" id="wilayah">{{ gempa.Wilayah }}</div>
+            </div>
+            <div class="info-item full-width">
+                <div class="label">🫨 Dirasakan</div>
+                <div class="value" id="dirasakan">{{ gempa.Dirasakan }}</div>
+            </div>
+            <div class="info-item full-width">
+                <div class="label">ℹ️ Potensi</div>
+                <div class="value" id="potensi">{{ gempa.Potensi }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="terkini-card">
+        <p class="card-title">🕒 5 Gempa Terkini</p>
+        <div id="terkini-list">
+            {% for g in gempa_terkini %}
+            <div class="terkini-row">
+                <div class="terkini-jam">
+                    {{ g.Jam }}
+                    <span>{{ g.Tanggal }}</span>
+                </div>
+                <div class="terkini-wilayah">{{ g.Wilayah }}</div>
+                <div class="terkini-mag
+                    {% if g.Magnitude | float >= 5 %}besar
+                    {% elif g.Magnitude | float >= 3 %}sedang
+                    {% else %}kecil{% endif %}">
+                    M {{ g.Magnitude }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Inisialisasi peta -->
+    <script>
+        var lat  = {{ gempa.lat }};
+        var lon  = {{ gempa.lon }};
+        var MAG  = {{ gempa.Magnitude }};
+        var INFO = "{{ gempa.Wilayah }}";
+        var TGL  = "{{ gempa.Tanggal }}";
+        var JAM  = "{{ gempa.Jam }}";
+
+        var warna = MAG >= 5 ? '#e53e3e' : MAG >= 3 ? '#ed8936' : '#48bb78';
+
+        var peta = L.map('peta', { zoomControl: true }).setView([lat, lon], 7);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
+        }).addTo(peta);
+
+        // Simpan marker supaya bisa dipindah saat update
+        var marker = L.circleMarker([lat, lon], {
+            radius: 16,
+            fillColor: warna,
+            color: '#ffffff',
+            weight: 2.5,
+            opacity: 1,
+            fillOpacity: 0.85
+        })
+        .bindPopup(
+            '<b style="font-size:15px">M ' + MAG + '</b><br>' +
+            '<span style="font-size:12px">' + INFO + '</span><br>' +
+            '<small style="color:#888">' + TGL + ' — ' + JAM + '</small>'
+        )
+        .addTo(peta)
+        .openPopup();
+    </script>
+
+    {% else %}
+    <div class="card">
+        <div class="error-box">
+            ⚠️ Gagal mengambil data dari BMKG.<br>
+            Periksa koneksi internet kamu.
+        </div>
+    </div>
+    {% endif %}
+
+    <a href="/" class="refresh-btn">🔄 Refresh Manual</a>
+</main>
+
+<footer>
+    Data bersumber dari BMKG — bmkg.go.id
+</footer>
+
+<!-- ✅ BARU: Auto-refresh setiap 60 detik tanpa reload halaman -->
+<script>
+    var INTERVAL = 60; // detik
+    var sisaWaktu = INTERVAL;
+
+    // Tampilkan waktu sekarang
+    function tampilWaktuUpdate() {
+        var now = new Date();
+        var jam = now.getHours().toString().padStart(2, '0');
+        var mnt = now.getMinutes().toString().padStart(2, '0');
+        var dtk = now.getSeconds().toString().padStart(2, '0');
+        document.getElementById('update-time').textContent = jam + ':' + mnt + ':' + dtk + ' WIB';
+    }
+
+    // Hitung mundur
+    function hitungMundur() {
+        sisaWaktu--;
+        document.getElementById('countdown').textContent = sisaWaktu;
+        if (sisaWaktu <= 0) {
+            sisaWaktu = INTERVAL;
+            ambilDataBaru();
+        }
+    }
+
+    // Tentukan class warna magnitudo
+    function kelasWarna(mag) {
+        var m = parseFloat(mag);
+        if (m >= 5) return 'besar';
+        if (m >= 3) return 'sedang';
+        return 'kecil';
+    }
+
+    // Ambil data terbaru dari server tanpa reload
+    function ambilDataBaru() {
+        fetch('/api/gempa')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                var g = data.gempa;
+                if (!g) return;
+
+                // Update card utama
+                var magNum = parseFloat(g.Magnitude);
+                var kelas  = kelasWarna(g.Magnitude);
+
+                document.getElementById('mag-number').textContent  = g.Magnitude;
+                document.getElementById('mag-number').className    = 'magnitude-number ' + kelas;
+                document.getElementById('tanggal').textContent     = g.Tanggal;
+                document.getElementById('jam').textContent         = g.Jam;
+                document.getElementById('koordinat').textContent   = g.Lintang + ', ' + g.Bujur;
+                document.getElementById('kedalaman').textContent   = g.Kedalaman;
+                document.getElementById('wilayah').textContent     = g.Wilayah;
+                document.getElementById('dirasakan').textContent   = g.Dirasakan;
+                document.getElementById('potensi').textContent     = g.Potensi;
+
+                // Update badge peringatan
+                var badge = document.getElementById('warning-badge');
+                badge.innerHTML = magNum >= 5
+                    ? '<span class="warning-badge">⚠ GEMPA BESAR</span>'
+                    : '';
+
+                // Pindahkan marker ke lokasi baru
+                var latBaru = parseFloat(g.lat);
+                var lonBaru = parseFloat(g.lon);
+                var warnaBaru = magNum >= 5 ? '#e53e3e' : magNum >= 3 ? '#ed8936' : '#48bb78';
+
+                marker.setLatLng([latBaru, lonBaru]);
+                marker.setStyle({ fillColor: warnaBaru });
+                marker.setPopupContent(
+                    '<b style="font-size:15px">M ' + g.Magnitude + '</b><br>' +
+                    '<span style="font-size:12px">' + g.Wilayah + '</span><br>' +
+                    '<small style="color:#888">' + g.Tanggal + ' — ' + g.Jam + '</small>'
+                );
+                peta.setView([latBaru, lonBaru], 7);
+
+                // Update daftar 5 terkini
+                var terkini = data.gempa_terkini;
+                var html = '';
+                terkini.forEach(function(t) {
+                    var kls = kelasWarna(t.Magnitude);
+                    html +=
+                        '<div class="terkini-row">' +
+                            '<div class="terkini-jam">' + t.Jam + '<span>' + t.Tanggal + '</span></div>' +
+                            '<div class="terkini-wilayah">' + t.Wilayah + '</div>' +
+                            '<div class="terkini-mag ' + kls + '">M ' + t.Magnitude + '</div>' +
+                        '</div>';
+                });
+                document.getElementById('terkini-list').innerHTML = html;
+
+                // Flash animasi tanda data baru
+                var card = document.getElementById('card-utama');
+                card.classList.remove('updated');
+                void card.offsetWidth; // reset animasi
+                card.classList.add('updated');
+
+                tampilWaktuUpdate();
+                console.log('✅ Data diperbarui:', g.Tanggal, g.Jam);
+            })
+            .catch(function(err) {
+                console.log('❌ Gagal ambil data:', err);
+            });
+    }
+
+    // Jalankan saat halaman pertama kali dimuat
+    tampilWaktuUpdate();
+
+    // Mulai countdown setiap 1 detik
+    setInterval(hitungMundur, 1000);
+</script>
+
+</body>
+</html>
