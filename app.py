@@ -1,12 +1,26 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 import requests
-from notifikasi import kirim_notif_telegram  # ✅ BARU
+from notifikasi import kirim_notif_telegram
 
 app = Flask(__name__)
 
-# ✅ BARU: simpan ID gempa terakhir yang sudah dinotifikasi
-# supaya tidak kirim notif berulang untuk gempa yang sama
 gempa_terakhir_notif = None
+
+# ✅ Format teks Potensi jadi lebih jelas dan spesifik
+def format_potensi(teks):
+    if not teks:
+        return {"teks": "Data tidak tersedia", "tipe": "normal"}
+    t = teks.lower()
+    if "tidak berpotensi tsunami" in t:
+        return {"teks": "Tidak berpotensi menimbulkan tsunami", "tipe": "aman"}
+    elif "berpotensi tsunami" in t:
+        return {"teks": "BERPOTENSI TSUNAMI — Waspada dan segera menjauh dari pantai", "tipe": "bahaya"}
+    elif "dirasakan" in t:
+        return {"teks": "Getaran dirasakan oleh masyarakat di sekitar wilayah episentrum", "tipe": "info"}
+    elif "tidak dirasakan" in t:
+        return {"teks": "Gempa tidak dirasakan oleh masyarakat umum", "tipe": "normal"}
+    else:
+        return {"teks": teks, "tipe": "normal"}
 
 def ambil_data_gempa():
     url = "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json"
@@ -24,12 +38,16 @@ def ambil_data_gempa():
             gempa["lat"] = 0
             gempa["lon"] = 0
 
+        # ✅ Format potensi
+        gempa["potensi_data"] = format_potensi(gempa.get("Potensi", ""))
+
         return gempa
 
     except Exception as e:
         print("ERROR ambil_data_gempa:", e)
         return None
 
+# ✅ Diubah jadi 10 gempa + sertakan koordinat untuk peta
 def ambil_gempa_terkini():
     url = "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
     try:
@@ -38,12 +56,22 @@ def ambil_gempa_terkini():
         daftar = data["Infogempa"]["gempa"]
 
         hasil = []
-        for g in daftar[:5]:
+        for g in daftar[:10]:
+            coords_raw = g.get("Coordinates", "0,0")
+            try:
+                coords = coords_raw.split(",")
+                lat = float(coords[0].strip())
+                lon = float(coords[1].strip())
+            except:
+                lat, lon = 0, 0
+
             hasil.append({
-                "Jam"       : g.get("Jam", "-"),
-                "Tanggal"   : g.get("Tanggal", "-"),
-                "Wilayah"   : g.get("Wilayah", "-"),
-                "Magnitude" : g.get("Magnitude", "-"),
+                "Jam"      : g.get("Jam", "-"),
+                "Tanggal"  : g.get("Tanggal", "-"),
+                "Wilayah"  : g.get("Wilayah", "-"),
+                "Magnitude": g.get("Magnitude", "-"),
+                "lat"      : lat,
+                "lon"      : lon,
             })
         return hasil
 
@@ -51,23 +79,31 @@ def ambil_gempa_terkini():
         print("ERROR ambil_gempa_terkini:", e)
         return []
 
+def cek_dan_kirim_notif(gempa):
+    global gempa_terakhir_notif
+    if gempa:
+        id_sekarang = gempa.get("DateTime", "")
+        if float(gempa["Magnitude"]) >= 5:
+            if id_sekarang != gempa_terakhir_notif:
+                kirim_notif_telegram(gempa)
+                gempa_terakhir_notif = id_sekarang
+
 @app.route("/")
 def index():
-    global gempa_terakhir_notif  # ✅ BARU
-
     gempa         = ambil_data_gempa()
     gempa_terkini = ambil_gempa_terkini()
-
-    # ✅ BARU: cek dan kirim notifikasi jika gempa >= 5
-    if gempa:
-        id_gempa_sekarang = gempa.get("DateTime", "")  # pakai DateTime sebagai ID unik
-
-        if float(gempa["Magnitude"]) >= 5:
-            if id_gempa_sekarang != gempa_terakhir_notif:
-                kirim_notif_telegram(gempa)
-                gempa_terakhir_notif = id_gempa_sekarang  # tandai sudah dinotifikasi
-
+    cek_dan_kirim_notif(gempa)
     return render_template("index.html", gempa=gempa, gempa_terkini=gempa_terkini)
+
+@app.route("/api/gempa")
+def api_gempa():
+    gempa         = ambil_data_gempa()
+    gempa_terkini = ambil_gempa_terkini()
+    cek_dan_kirim_notif(gempa)
+    return jsonify({
+        "gempa"        : gempa,
+        "gempa_terkini": gempa_terkini
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
