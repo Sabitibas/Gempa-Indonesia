@@ -28,15 +28,10 @@
             justify-content: space-between;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
 
         header .dot {
-            width: 10px;
-            height: 10px;
+            width: 10px; height: 10px;
             background: #e53e3e;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
@@ -45,7 +40,7 @@
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.3); }
+            50%       { opacity: 0.4; transform: scale(1.3); }
         }
 
         header h1 {
@@ -83,6 +78,27 @@
         .status-bar .update-time { color: #48bb78; font-weight: 600; }
         .status-bar .countdown   { color: #60a5fa; }
 
+        .tsunami-banner {
+            display: none;
+            background: #7f1d1d;
+            border-top: 3px solid #fca5a5;
+            border-bottom: 3px solid #fca5a5;
+            padding: 1.2rem 2rem;
+            text-align: center;
+            animation: flashBanner 1s infinite;
+        }
+
+        @keyframes flashBanner {
+            0%, 100% { background: #7f1d1d; }
+            50%       { background: #991b1b; }
+        }
+
+        .tsunami-banner.aktif     { display: block; }
+        .tsunami-banner .banner-icon  { font-size: 2rem; display: block; margin-bottom: 0.4rem; }
+        .tsunami-banner .banner-title { font-size: 1.3rem; font-weight: 800; color: #fca5a5; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.3rem; }
+        .tsunami-banner .banner-sub   { font-size: 0.85rem; color: #fecaca; line-height: 1.5; }
+        .tsunami-banner .banner-source{ font-size: 0.7rem; color: #f87171; margin-top: 0.5rem; letter-spacing: 1px; }
+
         main {
             max-width: 720px;
             margin: 2.5rem auto;
@@ -107,7 +123,6 @@
             background: #1f2937;
         }
 
-        /* Peta */
         #peta {
             width: 100%;
             height: 380px;
@@ -116,7 +131,6 @@
             margin-bottom: 0.6rem;
         }
 
-        /* Legend peta */
         .map-legend {
             display: flex;
             gap: 1rem;
@@ -138,12 +152,11 @@
             flex-shrink: 0;
         }
 
-        .legend-dot.terbaru  { width: 16px; height: 16px; background: #e53e3e; }
-        .legend-dot.besar    { width: 10px; height: 10px; background: #e53e3e; opacity: 0.6; }
-        .legend-dot.sedang   { width: 10px; height: 10px; background: #ed8936; opacity: 0.6; }
-        .legend-dot.kecil    { width: 10px; height: 10px; background: #48bb78; opacity: 0.6; }
+        .legend-dot.terbaru { width: 16px; height: 16px; background: #e53e3e; }
+        .legend-dot.besar   { width: 10px; height: 10px; background: #e53e3e; opacity: 0.6; }
+        .legend-dot.sedang  { width: 10px; height: 10px; background: #ed8936; opacity: 0.6; }
+        .legend-dot.kecil   { width: 10px; height: 10px; background: #48bb78; opacity: 0.6; }
 
-        /* Card utama */
         .card {
             background: #111827;
             border: 1px solid #1f2937;
@@ -169,16 +182,10 @@
             border-bottom: 1px solid #1f2937;
         }
 
-        .magnitude-number {
-            font-size: 4.5rem;
-            font-weight: 800;
-            line-height: 1;
-        }
-
+        .magnitude-number { font-size: 4.5rem; font-weight: 800; line-height: 1; }
         .magnitude-number.besar  { color: #e53e3e; }
         .magnitude-number.sedang { color: #ed8936; }
         .magnitude-number.kecil  { color: #48bb78; }
-
         .magnitude-label { font-size: 0.82rem; color: #9ca3af; margin-top: 5px; }
 
         .warning-badge {
@@ -193,11 +200,7 @@
             margin-top: 8px;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.85rem;
-        }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
 
         .info-item {
             background: #0d1421;
@@ -222,17 +225,14 @@
 
         .full-width { grid-column: 1 / -1; }
 
-        /* Potensi color-coded */
-        .potensi-aman    { border-left: 3px solid #48bb78; }
-        .potensi-bahaya  { border-left: 3px solid #e53e3e; background: #1a0d0d; }
-        .potensi-info    { border-left: 3px solid #60a5fa; }
-        .potensi-normal  { border-left: 3px solid #374151; }
-
+        .potensi-aman   { border-left: 3px solid #48bb78; }
+        .potensi-bahaya { border-left: 3px solid #e53e3e; background: #1a0d0d; }
+        .potensi-info   { border-left: 3px solid #60a5fa; }
+        .potensi-normal { border-left: 3px solid #374151; }
         .potensi-bahaya .value { color: #fca5a5; }
         .potensi-aman   .value { color: #86efac; }
         .potensi-info   .value { color: #93c5fd; }
 
-        /* Tabel terkini */
         .terkini-card {
             background: #111827;
             border: 1px solid #1f2937;
@@ -252,7 +252,6 @@
         .terkini-row:last-child  { border-bottom: none; }
         .terkini-row:first-child { padding-top: 0; }
 
-        /* Row pertama (terbaru) tampil lebih menonjol */
         .terkini-row.terbaru-row {
             background: #0f1d2e;
             border-radius: 8px;
@@ -261,36 +260,13 @@
             border-bottom: none;
         }
 
-        .terkini-jam {
-            font-size: 0.78rem;
-            color: #6b7280;
-            white-space: nowrap;
-        }
-
-        .terkini-jam span {
-            display: block;
-            font-size: 0.68rem;
-            color: #374151;
-            margin-top: 2px;
-        }
-
+        .terkini-jam { font-size: 0.78rem; color: #6b7280; white-space: nowrap; }
+        .terkini-jam span { display: block; font-size: 0.68rem; color: #374151; margin-top: 2px; }
         .terkini-jam.terbaru { color: #93c5fd; }
 
-        .terkini-wilayah {
-            font-size: 0.83rem;
-            font-weight: 500;
-            color: #d1d5db;
-            line-height: 1.4;
-        }
+        .terkini-wilayah { font-size: 0.83rem; font-weight: 500; color: #d1d5db; line-height: 1.4; }
 
-        .terkini-mag {
-            text-align: center;
-            font-size: 0.9rem;
-            font-weight: 800;
-            border-radius: 8px;
-            padding: 5px 4px;
-        }
-
+        .terkini-mag { text-align: center; font-size: 0.9rem; font-weight: 800; border-radius: 8px; padding: 5px 4px; }
         .terkini-mag.besar  { background: #2d1111; color: #e53e3e; }
         .terkini-mag.sedang { background: #2a1c0a; color: #ed8936; }
         .terkini-mag.kecil  { background: #0d2118; color: #48bb78; }
@@ -307,11 +283,7 @@
             font-weight: 700;
         }
 
-        .error-box {
-            text-align: center;
-            padding: 3rem;
-            color: #6b7280;
-        }
+        .error-box { text-align: center; padding: 3rem; color: #6b7280; }
 
         .refresh-btn {
             display: block;
@@ -361,30 +333,30 @@
     <span>Auto-refresh in <span class="countdown" id="countdown">60</span>s</span>
 </div>
 
+<div class="tsunami-banner {% if gempa and gempa.potensi_data.tipe == 'bahaya' %}aktif{% endif %}"
+     id="tsunami-banner">
+    <span class="banner-icon">🌊</span>
+    <div class="banner-title">⚠ TSUNAMI WARNING</div>
+    <div class="banner-sub">
+        Potensi tsunami terdeteksi di wilayah terdampak gempa.<br>
+        Segera menjauh dari pantai dan daerah rendah. Ikuti arahan resmi BMKG.
+    </div>
+    <div class="banner-source">SOURCE: BMKG — bmkg.go.id</div>
+</div>
+
 <main>
     {% if gempa %}
 
-    <!-- PETA -->
     <p class="section-label">Epicenter Map — Last 10 Earthquakes</p>
     <div id="peta"></div>
 
-    <!-- Legend -->
     <div class="map-legend">
-        <div class="legend-item">
-            <div class="legend-dot terbaru"></div> Most Recent
-        </div>
-        <div class="legend-item">
-            <div class="legend-dot besar"></div> M ≥ 5.0
-        </div>
-        <div class="legend-item">
-            <div class="legend-dot sedang"></div> M 3.0–4.9
-        </div>
-        <div class="legend-item">
-            <div class="legend-dot kecil"></div> M &lt; 3.0
-        </div>
+        <div class="legend-item"><div class="legend-dot terbaru"></div> Most Recent (any magnitude)</div>
+        <div class="legend-item"><div class="legend-dot besar"></div> M ≥ 5.0</div>
+        <div class="legend-item"><div class="legend-dot sedang"></div> M 3.0–4.9</div>
+        <div class="legend-item"><div class="legend-dot kecil"></div> M &lt; 3.0</div>
     </div>
 
-    <!-- CARD GEMPA TERBARU -->
     <p class="section-label">Latest Earthquake</p>
     <div class="card" id="card-utama">
         <div class="magnitude-box">
@@ -437,15 +409,13 @@
         </div>
     </div>
 
-    <!-- 10 GEMPA TERKINI -->
     <p class="section-label">Recent Earthquake History</p>
     <div class="terkini-card">
         <div id="terkini-list">
             {% for g in gempa_terkini %}
             <div class="terkini-row {% if loop.first %}terbaru-row{% endif %}">
                 <div class="terkini-jam {% if loop.first %}terbaru{% endif %}">
-                    {{ g.Jam }}
-                    <span>{{ g.Tanggal }}</span>
+                    {{ g.Jam }}<span>{{ g.Tanggal }}</span>
                 </div>
                 <div class="terkini-wilayah">
                     {{ g.Wilayah }}
@@ -462,49 +432,60 @@
         </div>
     </div>
 
-    <!-- INISIALISASI PETA -->
+    <!-- PETA JAVASCRIPT -->
     <script>
-        var daftarGempa = {{ gempa_terkini | tojson }};
+        // ✅ Data gempa terbaru (dari autogempa.json — berapapun magnitudonya)
+        var mainGempa = {
+            lat      : {{ gempa.lat }},
+            lon      : {{ gempa.lon }},
+            Magnitude: "{{ gempa.Magnitude }}",
+            Wilayah  : "{{ gempa.Wilayah }}",
+            Tanggal  : "{{ gempa.Tanggal }}",
+            Jam      : "{{ gempa.Jam }}"
+        };
+
+        // Data 10 gempa terkini (dari gempaterkini.json — biasanya M >= 5)
+        var terkiniData = {{ gempa_terkini | tojson }};
+
+        // ✅ Gabungkan: mainGempa selalu jadi index 0,
+        //    lalu isi sisanya dari terkiniData (skip kalau koordinat sama)
+        function buildDaftarPeta(mainG, terkiniList) {
+            var result = [mainG];
+            terkiniList.forEach(function(g) {
+                if (result.length >= 10) return;
+                // Skip jika lokasi sama dengan mainGempa
+                var sameLat = Math.abs(g.lat - mainG.lat) < 0.05;
+                var sameLon = Math.abs(g.lon - mainG.lon) < 0.05;
+                if (sameLat && sameLon) return;
+                result.push(g);
+            });
+            return result;
+        }
+
         var markers = [];
 
-        // Tentukan warna berdasarkan magnitudo
         function getWarna(mag) {
             var m = parseFloat(mag);
-            if (m >= 5) return '#e53e3e';
-            if (m >= 3) return '#ed8936';
-            return '#48bb78';
+            return m >= 5 ? '#e53e3e' : m >= 3 ? '#ed8936' : '#48bb78';
         }
 
-        // Tentukan class CSS magnitudo
-        function getKelas(mag) {
-            var m = parseFloat(mag);
-            if (m >= 5) return 'besar';
-            if (m >= 3) return 'sedang';
-            return 'kecil';
-        }
-
-        // Inisialisasi peta, fokus ke gempa terbaru
-        var latAwal = daftarGempa.length > 0 ? daftarGempa[0].lat : -2.5;
-        var lonAwal = daftarGempa.length > 0 ? daftarGempa[0].lon : 118;
-
-        var peta = L.map('peta', { zoomControl: true }).setView([latAwal, lonAwal], 6);
+        // Inisialisasi peta
+        var peta = L.map('peta', { zoomControl: true }).setView([mainGempa.lat, mainGempa.lon], 6);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>'
         }).addTo(peta);
 
-        // Gambar semua marker
         function gambarMarkers(daftar) {
-            // Hapus marker lama
             markers.forEach(function(m) { peta.removeLayer(m); });
             markers = [];
 
             daftar.forEach(function(g, index) {
-                if (g.lat === 0 && g.lon === 0) return;
+                if (!g.lat || !g.lon || (g.lat === 0 && g.lon === 0)) return;
 
                 var isTerbaru = (index === 0);
-                var warna = getWarna(g.Magnitude);
+                var warna     = getWarna(g.Magnitude);
 
                 var m = L.circleMarker([g.lat, g.lon], {
                     radius     : isTerbaru ? 16 : 9,
@@ -527,7 +508,8 @@
             });
         }
 
-        gambarMarkers(daftarGempa);
+        // Gambar markers pertama kali
+        gambarMarkers(buildDaftarPeta(mainGempa, terkiniData));
     </script>
 
     {% else %}
@@ -544,7 +526,6 @@
 
 <footer>INDONESIA EARTHQUAKE DETECTOR &nbsp;·&nbsp; DATA SOURCE: BMKG.GO.ID</footer>
 
-<!-- AUTO-REFRESH -->
 <script>
     var INTERVAL  = 60;
     var sisaWaktu = INTERVAL;
@@ -554,7 +535,7 @@
         var h = now.getHours().toString().padStart(2,'0');
         var m = now.getMinutes().toString().padStart(2,'0');
         var s = now.getSeconds().toString().padStart(2,'0');
-        document.getElementById('update-time').textContent = h + ':' + m + ':' + s + ' WIB';
+        document.getElementById('update-time').textContent = h+':'+m+':'+s+' WIB';
     }
 
     function hitungMundur() {
@@ -573,10 +554,9 @@
                 var g = data.gempa;
                 if (!g) return;
 
-                var mag = parseFloat(g.Magnitude);
+                var mag   = parseFloat(g.Magnitude);
                 var kelas = mag >= 5 ? 'besar' : mag >= 3 ? 'sedang' : 'kecil';
 
-                // Update card utama
                 document.getElementById('mag-number').textContent = g.Magnitude;
                 document.getElementById('mag-number').className   = 'magnitude-number ' + kelas;
                 document.getElementById('tanggal').textContent    = g.Tanggal;
@@ -586,35 +566,49 @@
                 document.getElementById('wilayah').textContent    = g.Wilayah;
                 document.getElementById('dirasakan').textContent  = g.Dirasakan;
 
-                // Update Potensi dengan warna
                 var potensiItem = document.getElementById('potensi-item');
                 potensiItem.className = 'info-item full-width potensi-' + g.potensi_data.tipe;
                 document.getElementById('potensi').textContent = g.potensi_data.teks;
 
-                // Update badge
                 document.getElementById('warning-badge').innerHTML = mag >= 5
                     ? '<span class="warning-badge">⚠ MAJOR EARTHQUAKE</span>' : '';
 
-                // Update markers peta
-                gambarMarkers(data.gempa_terkini);
+                // Update banner tsunami
+                var banner = document.getElementById('tsunami-banner');
+                if (g.potensi_data && g.potensi_data.tipe === 'bahaya') {
+                    banner.classList.add('aktif');
+                } else {
+                    banner.classList.remove('aktif');
+                }
+
+                // ✅ Rebuild daftar peta: mainGempa + terkini
+                var newMain = {
+                    lat      : g.lat,
+                    lon      : g.lon,
+                    Magnitude: g.Magnitude,
+                    Wilayah  : g.Wilayah,
+                    Tanggal  : g.Tanggal,
+                    Jam      : g.Jam
+                };
+                gambarMarkers(buildDaftarPeta(newMain, data.gempa_terkini));
                 peta.setView([g.lat, g.lon], 6);
 
                 // Update tabel terkini
                 var html = '';
                 data.gempa_terkini.forEach(function(t, i) {
-                    var kls = t.Magnitude >= 5 ? 'besar' : t.Magnitude >= 3 ? 'sedang' : 'kecil';
-                    var isTerbaru = (i === 0);
-                    html += '<div class="terkini-row' + (isTerbaru ? ' terbaru-row' : '') + '">' +
-                        '<div class="terkini-jam' + (isTerbaru ? ' terbaru' : '') + '">' + t.Jam +
+                    var kls = parseFloat(t.Magnitude) >= 5 ? 'besar' :
+                              parseFloat(t.Magnitude) >= 3 ? 'sedang' : 'kecil';
+                    var isT = (i === 0);
+                    html += '<div class="terkini-row' + (isT ? ' terbaru-row' : '') + '">' +
+                        '<div class="terkini-jam' + (isT ? ' terbaru' : '') + '">' + t.Jam +
                             '<span>' + t.Tanggal + '</span></div>' +
                         '<div class="terkini-wilayah">' + t.Wilayah +
-                            (isTerbaru ? '<span class="terbaru-label">Latest</span>' : '') + '</div>' +
+                            (isT ? '<span class="terbaru-label">Latest</span>' : '') + '</div>' +
                         '<div class="terkini-mag ' + kls + '">M ' + t.Magnitude + '</div>' +
                         '</div>';
                 });
                 document.getElementById('terkini-list').innerHTML = html;
 
-                // Flash animasi
                 var card = document.getElementById('card-utama');
                 card.classList.remove('updated');
                 void card.offsetWidth;
