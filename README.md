@@ -1,6 +1,6 @@
 Sistem Monitoring Gempa BMKG
 
-Demo Website
+Website
 
 https://gempa-indonesia.onrender.com/
 
