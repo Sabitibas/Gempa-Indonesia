@@ -30,16 +30,3 @@ https://www.bmkg.go.id/gempabumi/gempabumi-realtime
 Data Terbuka BMKG
 
 https://data.bmkg.go.id/gempabumi/
-
-Teknologi yang Digunakan
-
-* Python
-* Flask
-* HTML
-* CSS
-* JavaScript
-* Requests
-
-## Pengembang
-
-Proyek ini dibuat sebagai tugas/pengembangan sistem informasi kebencanaan untuk meningkatkan kewaspadaan masyarakat terhadap kejadian gempa bumi di Indonesia.
