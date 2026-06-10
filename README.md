@@ -4,7 +4,7 @@ Website monitoring gempa bumi berbasis web yang menampilkan informasi gempa terb
 
 Demo Website
 
-https://sistem-gempa-bmkg.containers.snapdeploy.dev
+(https://gempa-indonesia.onrender.com/)
 
 Fitur
 
