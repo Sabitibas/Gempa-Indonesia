@@ -1,12 +1,12 @@
-Sistem Monitoring Gempa BMKG
+## Sistem Monitoring Gempa
 
 Website monitoring gempa bumi berbasis web yang menampilkan informasi gempa terbaru dari BMKG, dilengkapi batas minimal magnitudo, dan sistem notifikasi
 
-Demo Website
+## Website
 
-(https://gempa-indonesia.onrender.com/)
+https://gempa-indonesia.onrender.com/
 
-Fitur
+## Fitur Website
 
 * Menampilkan informasi gempa bumi terbaru secara real-time
 * Filter notifikasi berdasarkan magnitudo minimum
@@ -15,7 +15,7 @@ Fitur
 * Notifikasi gempa sesuai preferensi pengguna
 * Menampilkan informasi potensi ancaman dari gempa yang terjadi
 
-Sumber Data
+## Sumber Data Website
 
 Data gempa bumi yang digunakan dalam sistem ini bersumber dari Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)
 
