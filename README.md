@@ -26,3 +26,17 @@ https://www.bmkg.go.id/gempabumi
 BMKG Gempabumi Real-time
 
 https://www.bmkg.go.id/gempabumi/gempabumi-realtime
+
+## Teknologi yang Digunakan
+
+| Komponen | Teknologi |
+|---|---|
+| Backend | Python |
+| Framework | Flask |
+| Frontend | HTML, CSS, JavaScript |
+| Pemetaan | Leaflet.js |
+| Basemap | OpenStreetMap |
+| Pengolahan Data | Built-in JSON (requests) |
+| Penyimpanan Data | Real-time API (BMKG) |
+| Notifikasi | Telegram Bot API |
+| Deployment | Render |
