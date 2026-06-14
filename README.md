@@ -1,6 +1,6 @@
 ## Sistem Monitoring Gempa
 
-Website monitoring gempa bumi berbasis web yang menampilkan informasi gempa terbaru dari BMKG, dilengkapi batas minimal magnitudo, dan sistem notifikasi
+Indonesia Earthquake Detector adalah sistem monitoring gempa bumi berbasis web yang menampilkan data gempa secara real-time dari API BMKG (Badan Meteorologi, Klimatologi, dan Geofisika). Sistem ini dirancang untuk memberikan informasi gempa terkini kepada pengguna dengan tampilan visual yang informatif, peta interaktif, dan notifikasi otomatis melalui Telegram.
 
 ## Website
 
@@ -8,12 +8,13 @@ https://gempa-indonesia.onrender.com/
 
 ## Fitur Website
 
-* Menampilkan informasi gempa bumi terbaru secara real-time
-* Filter notifikasi berdasarkan magnitudo minimum
-* Auto refresh data gempa
-* Menampilkan lokasi, magnitudo, kedalaman, dan waktu kejadian gempa
-* Notifikasi gempa sesuai preferensi pengguna
-* Menampilkan informasi potensi ancaman dari gempa yang terjadi
+* Informasi gempa terbaru: tanggal, jam, magnitudo, kedalaman, wilayah, koordinat, dirasakan
+* Pesan otomatis dikirim ke Telegram saat terdeteksi gempa M ≥ 5.0 SR
+* Menampilkan 10 titik episentrum gempa terkini.
+* Marker terbesar = gempa paling baru, warna berdasarkan magnitudo
+* Daftar 10 gempa terkini dengan badge warna berdasarkan magnitudo
+* Banner merah berkedip muncul otomatis jika BMKG menyatakan potensi tsunami
+* Teks potensi BMKG diterjemahkan menjadi lebih spesifik dengan kode warna
 
 ## Sumber Data Website
 
@@ -29,14 +30,29 @@ https://www.bmkg.go.id/gempabumi/gempabumi-realtime
 
 ## Teknologi yang Digunakan
 
-| Komponen | Teknologi |
-|---|---|
-| Backend | Python |
-| Framework | Flask |
-| Frontend | HTML, CSS, JavaScript |
-| Pemetaan | Leaflet.js |
-| Basemap | OpenStreetMap |
-| Pengolahan Data | Built-in JSON (requests) |
-| Penyimpanan Data | Real-time API (BMKG) |
-| Notifikasi | Telegram Bot API |
-| Deployment | Render |
+| Komponen | Teknologi | Fungsi |
+|---|---|---|
+| Backend | Python | Bahasa pemrograman utama untuk logika server |
+| Framework | Flask | Web framework untuk routing dan serving HTTP |
+| Frontend | HTML | Struktur halaman web |
+| Styling | CSS | Struktur halaman web |
+| Interaktivitas | JavaScript| Interaktivitas	JavaScript	Logika sisi browser, auto-refresh, peta |
+| Pemetaan | Leaflet.js | Library peta interaktif berbasis JavaScript |
+| Basemap | OpenStreetMap | Sumber tile/gambar peta gratis |
+| Template Engine | Jinja2 | Sumber tile/gambar peta gratis |
+| Pengolahan Data | Built-in JSON | Mengirim data gempa dari BMKG |
+| HTTP Client | request | HTTP Client	requests	Mengambil data dari API BMKG |
+| Penyimpanan Data | Real-time API (BMKG) | Data gempa real-time Indonesia |
+| Notifikasi | Telegram Bot API | Pengiriman notifikasi otomatis ke HP |
+| Deployment | Render | Platform hosting aplikasi web |
+
+## Alur Data
+
+Browser pengguna
+    ↕ HTTP Request (GET /)
+app.py (Flask - Render)
+    ├── ambil_data_gempa()   → API BMKG autogempa.json
+    ├── ambil_gempa_terkini() → API BMKG gempaterkini.json
+    ├── format_potensi()     → olah teks potensi
+    ├── cek_dan_kirim_notif() → Telegram (jika M ≥ 5)
+    └── render_template()    → kirim HTML ke browser
