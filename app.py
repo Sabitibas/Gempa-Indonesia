@@ -83,7 +83,7 @@ def cek_dan_kirim_notif(gempa):
     global gempa_terakhir_notif
     if gempa:
         id_sekarang = gempa.get("DateTime", "")
-        if float(gempa["Magnitude"]) >= 5:
+        if float(gempa["Magnitude"]) >= 3.5:
             if id_sekarang != gempa_terakhir_notif:
                 kirim_notif_telegram(gempa)
                 gempa_terakhir_notif = id_sekarang
