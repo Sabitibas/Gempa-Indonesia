@@ -1,6 +1,8 @@
 from flask import Flask, render_template, jsonify
+from apscheduler.schedulers.background import BackgroundScheduler
 import requests
 from notifikasi import kirim_notif_telegram
+import atexit
 
 app = Flask(__name__)
 
@@ -87,6 +89,29 @@ def cek_dan_kirim_notif(gempa):
             if id_sekarang != gempa_terakhir_notif:
                 kirim_notif_telegram(gempa)
                 gempa_terakhir_notif = id_sekarang
+                print(f"✅ Notif dikirim untuk gempa {gempa['Magnitude']} SR di {gempa['Wilayah']}")
+            else:
+                print(f"⏭️  Gempa sudah dikirim sebelumnya (skipped)")
+        else:
+            print(f"ℹ️  Gempa {gempa['Magnitude']} SR (threshold 3.5, tidak dikirim)")
+
+# 🔄 Background job - check gempa setiap 5 menit
+def background_check_gempa():
+    print("🔍 Checking gempa terbaru...")
+    gempa = ambil_data_gempa()
+    if gempa:
+        print(f"📊 Gempa terdeteksi: {gempa['Magnitude']} SR - {gempa['Wilayah']}")
+        cek_dan_kirim_notif(gempa)
+    else:
+        print("❌ Gagal ambil data gempa")
+
+# Setup scheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=background_check_gempa, trigger="interval", minutes=5)
+scheduler.start()
+
+# Shutdown scheduler saat aplikasi ditutup
+atexit.register(lambda: scheduler.shutdown())
 
 @app.route("/")
 def index():
