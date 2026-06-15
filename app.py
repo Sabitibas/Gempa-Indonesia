@@ -51,7 +51,7 @@ def ambil_data_gempa():
 
 # ✅ Diubah jadi 10 gempa + sertakan koordinat untuk peta
 def ambil_gempa_terkini():
-    url = "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+    url = "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
     try:
         response = requests.get(url, timeout=10)
         data = response.json()
