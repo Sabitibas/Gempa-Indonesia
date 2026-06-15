@@ -83,6 +83,11 @@ def ambil_gempa_terkini():
 
 def cek_dan_kirim_notif(gempa):
     global gempa_terakhir_notif
+
+    # print("=== CEK NOTIF ===")
+    # print("Magnitude:", gempa.get("Magnitude"))
+    # print("DateTime :", gempa.get("DateTime"))
+
     if gempa:
         id_sekarang = gempa.get("DateTime", "")
         if float(gempa["Magnitude"]) >= 3.5:
