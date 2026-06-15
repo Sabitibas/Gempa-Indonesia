@@ -45,14 +45,3 @@ https://www.bmkg.go.id/gempabumi/gempabumi-realtime
 | Penyimpanan Data | Real-time API (BMKG) | Data gempa real-time Indonesia |
 | Notifikasi | Telegram Bot API | Pengiriman notifikasi otomatis ke HP |
 | Deployment | Render | Platform hosting aplikasi web |
-
-## Alur Data
-
-Browser pengguna
-    ↕ HTTP Request (GET /)
-app.py (Flask - Render)
-    ├── ambil_data_gempa()   → API BMKG autogempa.json
-    ├── ambil_gempa_terkini() → API BMKG gempaterkini.json
-    ├── format_potensi()     → olah teks potensi
-    ├── cek_dan_kirim_notif() → Telegram (jika M ≥ 5)
-    └── render_template()    → kirim HTML ke browser
